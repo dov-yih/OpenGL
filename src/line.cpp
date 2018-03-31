@@ -51,7 +51,6 @@ void drawGrid(void) {
 		glEnd();
 		glFlush();
 	}
-
 }
 
 void bresenhanLine(int x0, int y0, int x1, int y1, int color) {
@@ -101,7 +100,7 @@ int main(int argc, char** argv)
 	glutInitWindowSize(EDGE, EDGE);
 
 
-	glutCreateWindow("An Example OpenGL Program");
+	glutCreateWindow("Bresenhan Line");
 
 
 	glutDisplayFunc(draw);
