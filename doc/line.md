@@ -84,6 +84,63 @@ glBegin 的参数代表其两个函数之间所画图形的种类。
 
 是 glVertex*() 系列函数中的一个。其参数的值为 -1 ~ 1
 
+## Feature
+
+为了便于查看做出来的点位置，实现了一个网格背景。
+
+```cpp
+void drawGrid(void) {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(1.0, 1.0, 1.0);
+	GLfloat line_pos = -1.0;
+	while (line_pos < 1.0) {
+		line_pos += line_movement;
+		glBegin(GL_LINES);
+		glVertex2f(line_pos, -1.0);
+		glVertex2f(line_pos, 1.0);
+		glEnd();
+		glBegin(GL_LINES);
+		glVertex2f(-1.0, line_pos);
+		glVertex2f(1.0, line_pos);
+		glEnd();
+		glFlush();
+	}
+}
+```
 ## 缺点
 
 原算法假定斜率在 0～1 之间。
+
+### Trick
+
+这里我自己实现了一个斜率从 0 到 ∞ 的算法，但是由于原算法画出的“直线”在某些情况会存在差异，所以默认不使用。要尝试的话请手动取消`src/line.cpp`**第 33 行**注释。
+
+测试时， `k = 4` 画出的直线没有问题
+
+核心部分：
+
+```cpp
+#ifdef K
+    ye = y;
+#else
+    ye = -0.5;
+#endif
+
+// codes & code
+
+    #ifdef K
+        /*
+        斜率再 0～正无穷
+         */
+        // x y 应该同时改变
+        y = (int)( ye + 0.5 );
+    #else
+        /**
+        这里假设斜率在 0 ~ 1 之间
+        */
+        if (ye > 0) {
+            y++;
+            ye--;
+        }
+    #endif
+```
