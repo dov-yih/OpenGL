@@ -17,10 +17,10 @@
 #include "stdafx.h"
 #include <GL/glut.h>
 
-#endif // 
+#endif
 
  //
- // OpenGL.cpp: ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+ // OpenGL.cpp: å®šä¹‰æ§åˆ¶å°åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
  //
 
 #include <iostream>
@@ -68,12 +68,12 @@ void bresenhanLine(int x0, int y0, int x1, int y1, int color) {
 		glVertex2f(x * point_movement - 1.0, y * point_movement - 1.0);
 		glEnd();
 		glFlush();
-		// x y Ó¦¸ÃÍ¬Ê±¸Ä±ä
+		// x y åº”è¯¥åŒæ—¶æ”¹å˜
 		x++, ye = ye + k;
 		// y = (int)ye;
 
 		/**
-		ÕâÀï¼ÙÉèĞ±ÂÊÔÚ 0 ~ 1 Ö®¼ä
+		è¿™é‡Œå‡è®¾æ–œç‡åœ¨ 0 ~ 1 ä¹‹é—´
 		*/
 		if (ye > 0) {
 			y++;

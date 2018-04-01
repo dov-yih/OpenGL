@@ -1,7 +1,7 @@
 # How to complie
 
 # On Linux
-you should shell cmd should like this:
+your shell cmd should like this:
 
 ```sh
 g++ -o app app.cpp -lglut -lGLU -lGL
@@ -11,39 +11,39 @@ Ref Here: <https://www.opengl.org/discussion_boards/showthread.php/172614-undefi
 
 # Windows
 
-## °²×°GLUT¹¤¾ß°ü    
+## å®‰è£…GLUTå·¥å…·åŒ…
 
-ÏÈÏÂÔØ GLUT ¡£
+å…ˆä¸‹è½½ GLUT ã€‚
 
-Windows»·¾³ÏÂ°²×°GLUTµÄ²½Öè£º    
-1. ½«ÏÂÔØµÄÑ¹Ëõ°ü½â¿ª£¬½«µÃµ½5¸öÎÄ¼ş
-2. ÒÔÎÒµÄ°²×°Ä¿Â¼ÎªÀı£º    
-  + ¡°d:\Program Files\Microsoft Visual Studio\VC98\include\GLÎÄ¼ş¼Ğ¡±¡£°Ñ½âÑ¹µÃµ½µÄglut.h·Åµ½Õâ¸öGLÎÄ¼ş¼ĞÀï¡£Ã»ÓĞGLÎÄ¼ş¼Ğ¿ÉÒÔ×Ô¼º½¨Ò»¸ö£¬Ò»°ã¶¼ÓĞµÄ¡£
-  + ¡°d:\Program Files\Microsoft Visual Studio\VC98\libÎÄ¼ş¼Ğ¡±¡£°Ñ½âÑ¹µÃµ½µÄglut.libºÍglut32.lib·Åµ½¾²Ì¬º¯Êı¿âËùÔÚÎÄ¼ş¼Ğ£¬¼´libÎÄ¼ş¼Ğ¡£
-  + °Ñ½âÑ¹µÃµ½µÄglut.dllºÍglut32.dll·Åµ½²Ù×÷ÏµÍ³Ä¿Â¼ÏÂÃæµÄsystem32ÎÄ¼ş¼ĞÄÚ¡££¨µäĞÍµÄÎ»ÖÃÎª£ºC:\Windows\System32£©ÕâÊÇ·Ç³£ÖØÒªµÄ¶¯Ì¬Á´½Ó¿âÉèÖÃ£¡  
+Windowsç¯å¢ƒä¸‹å®‰è£…GLUTçš„æ­¥éª¤ï¼š
+1. å°†ä¸‹è½½çš„å‹ç¼©åŒ…è§£å¼€ï¼Œå°†å¾—åˆ°5ä¸ªæ–‡ä»¶
+2. ä»¥æˆ‘çš„å®‰è£…ç›®å½•ä¸ºä¾‹ï¼š
+  + â€œd:\Program Files\Microsoft Visual Studio\VC98\include\GLæ–‡ä»¶å¤¹â€ã€‚æŠŠè§£å‹å¾—åˆ°çš„glut.hæ”¾åˆ°è¿™ä¸ªGLæ–‡ä»¶å¤¹é‡Œã€‚æ²¡æœ‰GLæ–‡ä»¶å¤¹å¯ä»¥è‡ªå·±å»ºä¸€ä¸ªï¼Œä¸€èˆ¬éƒ½æœ‰çš„ã€‚
+  + â€œd:\Program Files\Microsoft Visual Studio\VC98\libæ–‡ä»¶å¤¹â€ã€‚æŠŠè§£å‹å¾—åˆ°çš„glut.libå’Œglut32.libæ”¾åˆ°é™æ€å‡½æ•°åº“æ‰€åœ¨æ–‡ä»¶å¤¹ï¼Œå³libæ–‡ä»¶å¤¹ã€‚
+  + æŠŠè§£å‹å¾—åˆ°çš„glut.dllå’Œglut32.dllæ”¾åˆ°æ“ä½œç³»ç»Ÿç›®å½•ä¸‹é¢çš„system32æ–‡ä»¶å¤¹å†…ã€‚ï¼ˆå…¸å‹çš„ä½ç½®ä¸ºï¼šC:\Windows\System32ï¼‰è¿™æ˜¯éå¸¸é‡è¦çš„åŠ¨æ€é“¾æ¥åº“è®¾ç½®ï¼
 
-## ´´½¨¹¤³Ì
+## åˆ›å»ºå·¥ç¨‹
 
-²½ÖèÈçÏÂ£º    
+æ­¥éª¤å¦‚ä¸‹ï¼š
 
-1. ´´½¨Ò»¸öWin32 Console Application¡££¨ÒÔÎÒ´´½¨µÄÎªÀı£¬¹¤³ÌÃûÎªsimpleGL£©    
-+ Á´½ÓOpenGL libraries:ÔÚVisual C++ÖĞÏÈµ¥»÷Project£¬ÔÙµ¥»÷Settings£¬ÔÙÕÒµ½Linkµ¥»÷£¬×îºóÔÚObject/library modules µÄ×îÇ°Ãæ¼ÓÉÏopengl32.lib Glut32.lib Glaux.lib glu32.lib ¡£    
-+ µ¥»÷Project SettingsÖĞµÄC/C++±êÇ©£¬½«Preprocessor definitions ÖĞµÄ_CONSOLE¸ÄÎª__WINDOWS¡£×îºóµ¥»÷OK¡£   
+1. åˆ›å»ºä¸€ä¸ªWin32 Console Applicationã€‚ï¼ˆä»¥æˆ‘åˆ›å»ºçš„ä¸ºä¾‹ï¼Œå·¥ç¨‹åä¸ºsimpleGLï¼‰
++ é“¾æ¥OpenGL libraries:åœ¨Visual C++ä¸­å…ˆå•å‡»Projectï¼Œå†å•å‡»Settingsï¼Œå†æ‰¾åˆ°Linkå•å‡»ï¼Œæœ€ååœ¨Object/library modules çš„æœ€å‰é¢åŠ ä¸Šopengl32.lib Glut32.lib Glaux.lib glu32.lib ã€‚
++ å•å‡»Project Settingsä¸­çš„C/C++æ ‡ç­¾ï¼Œå°†Preprocessor definitions ä¸­çš„_CONSOLEæ”¹ä¸º__WINDOWSã€‚æœ€åå•å‡»OKã€‚
 
-ÏÖÔÚ£¬×¼±¸¹¤×÷»ù±¾ÉÏÍê³ÉÁË£¬¿É²»ÒªÇáÊÓÕâÒ»²½£¬Èç¹ûÄãÃ»ÓĞÉèÖÃºÃÔÚ±àÒë¼°ÔËĞĞ¹ı³ÌÖĞ×Ü»á³ö´íµÄ¡£
+ç°åœ¨ï¼Œå‡†å¤‡å·¥ä½œåŸºæœ¬ä¸Šå®Œæˆäº†ï¼Œå¯ä¸è¦è½»è§†è¿™ä¸€æ­¥ï¼Œå¦‚æœä½ æ²¡æœ‰è®¾ç½®å¥½åœ¨ç¼–è¯‘åŠè¿è¡Œè¿‡ç¨‹ä¸­æ€»ä¼šå‡ºé”™çš„ã€‚
 
-¶ÔÓÚVS2005¿ÉÒÔÈçÏÂÉèÖÃ£º
-1. °Ñ glut.h ¸´ÖÆµ½ VC °²×°Â·¾¶ÏÂµÄ PlatFormSDK\include\gl ÎÄ¼ş¼Ğ
-2. °Ñ glut32.lib ¸´ÖÆµ½ VC °²×°Â·¾¶ÏÂµÄ PlatFormSDK\lib ÎÄ¼ş¼Ğ
-3. °Ñ glut32.dll ¸´ÖÆµ½ Windows\System32 ÎÄ¼ş¼Ğ
-4. ÔÚ VC ÖĞ´´½¨¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞò£¬ÔÚÑ¡ÏîÖĞÇå³ı¡°Ê¹ÓÃÔ¤±àÒëÍ·¡±£¨ÒÔÃâÓ°Ïì¿ÉÒÆÖ²ĞÔ£©
-5. ÔÚ VC ÖĞ´ò¿ªÏîÄ¿->ÊôĞÔ¶Ô»°¿ò½øĞĞÈçÏÂÉèÖÃ£º
-        ½«¡°ÅäÖÃ¡±ÏÂÀ­¿òÑ¡ÔòÎª¡°ËùÓĞÅäÖÃ¡±<br>
-        ´ò¿ª ¡°Á´½ÓÆ÷--ÊäÈë¡±Ïî<br>
-        ÔÚ¡°¸½¼ÓÒÀÀµÏî¡±ÖĞÔö¼Ó:
+å¯¹äºVS2005å¯ä»¥å¦‚ä¸‹è®¾ç½®ï¼š
+1. æŠŠ glut.h å¤åˆ¶åˆ° VC å®‰è£…è·¯å¾„ä¸‹çš„ PlatFormSDK\include\gl æ–‡ä»¶å¤¹
+2. æŠŠ glut32.lib å¤åˆ¶åˆ° VC å®‰è£…è·¯å¾„ä¸‹çš„ PlatFormSDK\lib æ–‡ä»¶å¤¹
+3. æŠŠ glut32.dll å¤åˆ¶åˆ° Windows\System32 æ–‡ä»¶å¤¹
+4. åœ¨ VC ä¸­åˆ›å»ºæ§åˆ¶å°åº”ç”¨ç¨‹åºï¼Œåœ¨é€‰é¡¹ä¸­æ¸…é™¤â€œä½¿ç”¨é¢„ç¼–è¯‘å¤´â€ï¼ˆä»¥å…å½±å“å¯ç§»æ¤æ€§ï¼‰
+5. åœ¨ VC ä¸­æ‰“å¼€é¡¹ç›®->å±æ€§å¯¹è¯æ¡†è¿›è¡Œå¦‚ä¸‹è®¾ç½®ï¼š
+        å°†â€œé…ç½®â€ä¸‹æ‹‰æ¡†é€‰åˆ™ä¸ºâ€œæ‰€æœ‰é…ç½®â€<br>
+        æ‰“å¼€ â€œé“¾æ¥å™¨--è¾“å…¥â€é¡¹<br>
+        åœ¨â€œé™„åŠ ä¾èµ–é¡¹â€ä¸­å¢åŠ :
 ```
 OpenGL32.lib
 glu32.lib
 glut32.lib
 ```
->64Î»µÄÏµÍ³Ó¦¸Ã½«glut32.dllÍ¬Ê±·ÅÈëwindowsÏÂµÄsystem32ºÍSysWOW64ÏÂ£¬²ÅÄÜÕÒµ½glut32.dll
+>64ä½çš„ç³»ç»Ÿåº”è¯¥å°†glut32.dllåŒæ—¶æ”¾å…¥windowsä¸‹çš„system32å’ŒSysWOW64ä¸‹ï¼Œæ‰èƒ½æ‰¾åˆ°glut32.dll
