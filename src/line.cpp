@@ -29,7 +29,8 @@ using namespace std;
 #define EDGE 600
 #define SPACING 10
 
-#define K
+// 如果想支持斜率大于 1 ，就取消下面的注释
+// #define K
 
 int move_count = EDGE / SPACING;
 GLfloat line_movement = 2.0 / move_count;
