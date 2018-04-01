@@ -29,6 +29,7 @@ using namespace std;
 #define EDGE 600
 #define SPACING 10
 
+#define K
 
 int move_count = EDGE / SPACING;
 GLfloat line_movement = 2.0 / move_count;
@@ -57,9 +58,11 @@ void bresenhanLine(int x0, int y0, int x1, int y1, int color) {
 	int x = x0, y = y0, dx = x1 - x0, dy = y1 - y0;
 
 	float k = (float)dy / (float)dx,
-		//ye = y
-		ye = -0.5;
-	;
+		#ifdef K
+			ye = y;
+		#else
+		 	ye = -0.5;
+		#endif
 
 	while (x < x1) {
 		glPointSize(10.0);
@@ -68,24 +71,31 @@ void bresenhanLine(int x0, int y0, int x1, int y1, int color) {
 		glVertex2f(x * point_movement - 1.0, y * point_movement - 1.0);
 		glEnd();
 		glFlush();
-		// x y 应该同时改变
-		x++, ye = ye + k;
-		// y = (int)ye;
 
-		/**
-		这里假设斜率在 0 ~ 1 之间
-		*/
-		if (ye > 0) {
-			y++;
-			ye--;
-		}
+		x++, ye = ye + k;
+
+		#ifdef K
+			/*
+			斜率再 0～正无穷
+			 */
+			// x y 应该同时改变
+			y = (int)( ye + 0.5 );
+		#else
+			/**
+			这里假设斜率在 0 ~ 1 之间
+			*/
+			if (ye > 0) {
+				y++;
+				ye--;
+			}
+		#endif
 	}
 }
 void draw(void) {
 
 	drawGrid();
 
-	bresenhanLine(0, 0, 20, 5, 1);
+	bresenhanLine(0, 0, 5, 20, 1);
 }
 
 
