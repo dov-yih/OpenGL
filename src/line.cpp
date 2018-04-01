@@ -59,11 +59,11 @@ void bresenhanLine(int x0, int y0, int x1, int y1, int color) {
 	int x = x0, y = y0, dx = x1 - x0, dy = y1 - y0;
 
 	float k = (float)dy / (float)dx,
-		#ifdef K
-			ye = y;
-		#else
-		 	ye = -0.5;
-		#endif
+	#ifdef K
+		ye = y;
+	#else
+	 	ye = -0.5;
+	#endif
 
 	while (x < x1) {
 		glPointSize(10.0);
