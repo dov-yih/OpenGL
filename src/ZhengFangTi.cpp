@@ -1,358 +1,240 @@
+#define _CRT_SECURE_NO_DEPRECATE //为了高版本VS中使用fopen（）函数
 #include <GL/glut.h>
-#include<iostream>
 #include <math.h>
-GLfloat w = 1100;
-GLfloat h = 1100;
-double rotate_x = 0.0;
-double rotate_y = 0.0;
-double rotate_z = 0.0;
+#include <stdio.h>
+#include   <malloc.h>
+#include <stdlib.h>
 
-# define sunshine 255.0/255.0, 210.0/255.0, 166.0/255.0
+#define PI 3.14159265359
 
+static GLuint texName[4];//存放纹理
+static double Ox = 0;
+static double Oy = 0;
+static double direction = 0;//站立位置及前进方向；
+static double step = 0.2;
+static GLfloat angle = 0.0f;
 
-GLuint texWall;
-GLuint texGrass;
-GLuint texFloor;
+GLUquadricObj * g_text;//曲面，制作一个包围房间的大球体做背景
 
-//图像数据在内存块中的偏移量
-#define BMP_Header_Length 54   
-//旋转角度
-
-static GLfloat angle = 0.0f; 
-//材质参数
-//材质参数：镜面反射，所得到的光的强度（颜色）
-GLfloat matiral_specular[4] = { 0.00, 0.00, 0.00, 1.00 };  
+					   //材质参数
+					   //材质参数：镜面反射，所得到的光的强度（颜色）
+GLfloat matiral_specular[4] = { 0.00, 0.00, 0.00, 1.00 };
 //材质本身就微微的向外发射光线
-GLfloat matiral_emission[4] = { 0.00, 0.00, 0.00, 1.00 }; 
+GLfloat matiral_emission[4] = { 0.00, 0.00, 0.00, 1.00 };
+
 const GLfloat matiral_shininess = 11.00;
 
-GLfloat sca[3] = { 1.5, 1.5, 1.5 };
-GLfloat tra[3] = { -300, 0, -470 };
-
-// 旋转坐标
-GLfloat AngleX;
-GLfloat AngleY;
-
+//设置材质
+GLfloat matiral_diffused[4] = { 0.20, 0.32, 0.80, 1.00 };
 
 void setMetiral(GLfloat matiral_diffuse_ambient[4]) {
-	//glMaterialfv(GL_FRONT,GL_AMBIENT,matiral_ambient); //光线照射到该材质上,经过多次反射
+	GLfloat mat_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);  //光线照射到该材质上,经过多次反射
 	//	遗留在整个光照环境中的强度（颜色）
-	//glMaterialfv(GL_FRONT,GL_DIFFUSE,matiral_diffuse); //光线照射到该材质上,漫反射，所得
-	//	到的光的强度（颜色）
 	//设置颜色
 	//设置相同值更逼真
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, matiral_diffuse_ambient);
 	//设置参数
 	//镜面反射，所得到的光的强度（颜色）
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, matiral_specular);   
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, matiral_specular);
 	//材质本身就微微的向外发射光线，以至于眼睛感觉到它有这样的颜色
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, matiral_emission); 
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, matiral_emission);
 	//“镜面指数”（0~128） 该值越小，材质越粗糙，点光源发射的光线照射到上面，也可以产生较大
 	//	的亮点。该值越大，表示材质越类似于镜面，光源照射到上面后，产生较小的亮点。
-	glMaterialf(GL_FRONT_AND_BACK, matiral_shininess, 0);   
+	glMaterialf(GL_FRONT_AND_BACK, matiral_shininess, 0);
 }
 
-void display(void)
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();          //增加M矩阵
-	glRotatef(rotate_x, 1.0, 0.0, 0.0);
-	glRotatef(rotate_y, 0.0, 1.0, 0.0);
-	glRotatef(rotate_z, 0.0, 0.0, 1.0);
-	//glScalef(1.5, 1.5, 1.5);
-	glTranslatef(-470, 0, -470);
-
-
-	glScalef(sca[0], sca[1], sca[2]);
-	glTranslatef(tra[0], tra[1], tra[2]);
-
-
-	//设置材质
-	GLfloat matiral_diffused[4] = { 0.20, 0.32, 0.80, 1.00 };
-	setMetiral(matiral_diffused);
-
-	// 绘制这正方形
-	// 1
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texFloor);
-	glBegin(GL_QUADS);	
-	// 贴图顶点							// x, y, z
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(60, 60, 260);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(60, 260, 260 );
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(260, 260, 260);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(260, 60, 260);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-
-	// 2
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texGrass);
-	glBegin(GL_QUADS);		
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(60, 60, 260);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(60, 60, 60);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(60, 260, 60);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(60, 260, 260);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	// 3
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texWall);
-	glBegin(GL_QUADS);				
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(60, 60, 260);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(260, 60, 260);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(260, 60, 60);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(60, 60, 60);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	// 4
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texFloor);
-	glBegin(GL_QUADS);				
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(60, 60, 60);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(260, 60, 60);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(260, 260, 60);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(60, 260, 60);
-	glEnd();
-	// 5
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texGrass);
-	glBegin(GL_QUADS);				
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(260, 60, 260);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(260, 260, 260);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(260, 260, 60);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(260, 60, 60);
-	glEnd();
-	// 6
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texWall);
-	glBegin(GL_QUADS);					
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(60, 260, 260);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(60, 260, 60);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(260, 260, 60);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(260, 260, 260);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-
-	// 刷新
-	glFlush(); 
-	//还要加上swapbuffer函数
-	glutSwapBuffers();
-}
-
-GLfloat diffuseMaterial[4] = { 0.5, 0.5, 0.5, 1.0 };
-//GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.5 };//光源位置
-GLfloat light_position[] = { 1.0,1.0,0,0};;//光源位置
-GLfloat mat_specular[] = { 0.0, 0.0, 0.0, 1.0 };
-
-void init(void) {
-	//glTranslatef(700, 400, 0);
-	//glutSolidSphere(35.0, 20, 20);
-	//glTranslatef(-700, -400, 0);
-
-	GLfloat sun_direction[] = { 700.0, 400.0, 100.0, 1.0 };
-	GLfloat sun_intensity[] = { sunshine, 1.0 };
-	GLfloat ambient_intensity[] = { 0.5, 0.5, 0.5, 1.0 };
-	
-	// Set up ambient light.环境光照
-	glEnable(GL_LIGHTING);           
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_intensity);
-	//glLightModelfv(GL_AMBIENT, ambient_intensity);
-
-    // Set up sunlight.漫反射
-	glEnable(GL_LIGHT0);     
-	glLightfv(GL_LIGHT0, GL_POSITION, sun_direction);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, sun_intensity);
-    // Configure glColor().
-	glEnable(GL_COLOR_MATERIAL);    
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-	glLineWidth(5); 
-
-	//定义背景颜色-->  黑色
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-
-	// 打开混合
-	glEnable(GL_BLEND);
-	// 关闭深度测试
-	glDisable(GL_DEPTH_TEST);
-	// 基于源象素alpha通道值的半透明混合函数
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	//打开深度测试
-	glEnable(GL_DEPTH_TEST);
-
-	// 貌似和视角有关的定义 places the camera at (0,0,0) and faces it along(0,0,-1).
-	glMatrixMode(GL_PROJECTION);
-	glOrtho(-w, w, -h, h, -w, w); 
-}
-
- //键盘相应函数
-void specialkeys(int key, int x, int y){  
-
-	//旋转
-	if (key == GLUT_KEY_RIGHT)
-		rotate_y -= 1;
-	else if (key == GLUT_KEY_LEFT)
-		rotate_y += 1;
-	else if (key == GLUT_KEY_DOWN)
-		rotate_x -= 1;
-	else if (key == GLUT_KEY_UP)
-		rotate_x += 1;
-
-	//场景放缩
-	if (key == GLUT_KEY_F7){
-		for (int i = 0; i < 3; i++)
-			sca[i] = sca[i] + 0.1;
-	} else if (key == GLUT_KEY_F8){
-		for (int i = 0; i < 3; i++)
-			sca[i] = sca[i] - 0.1;
-	}
-	glutPostRedisplay();
-}
-
-// 函数power_of_two用于判断一个整数是不是2的整数次幂
-int power_of_two(int n) {
-	if (n <= 0)
-		return 0;
-	return (n & (n - 1)) == 0;
-}
-
-/* 函数load_texture
-* 读取一个BMP文件作为纹理
-* 如果失败，返回0，如果成功，返回纹理编号
-*/
-GLuint load_texture(const char* file_name) {
-	GLint width, height, total_bytes;
-	GLubyte* pixels = 0;
-	GLuint last_texture_ID = 0, texture_ID = 0;
-	FILE *pFile;
-	errno_t err;
-
-	// 打开文件，如果失败，返回
-	if ((err = fopen_s(&pFile, file_name, "rb")) != 0) {
-		//如果打不开，就输出打不开
-		printf("can't open file: %s\n",file_name);   
-		//终止程序
+void loadTexture(const char* filename, GLuint &texture) {
+	static GLint    ImageWidth;
+	static GLint    ImageHeight;
+	static GLint    PixelLength;
+	static GLubyte* PixelData;
+	// 打开文件
+	FILE* pFile = fopen(filename, "rb");
+	if (pFile == 0)
 		exit(0);
-	}
-
-	// 读取文件中图象的宽度和高度
+	// 读取24位bmp图象的大小信息
 	fseek(pFile, 0x0012, SEEK_SET);
-	fread(&width, 4, 1, pFile);
-	fread(&height, 4, 1, pFile);
-	fseek(pFile, BMP_Header_Length, SEEK_SET);
-
-	// 计算每行像素所占字节数，并根据此数据计算总像素字节数
-	{
-		GLint line_bytes = width * 3;
-		while (line_bytes % 4 != 0)
-			++line_bytes;
-		total_bytes = line_bytes * height;
+	fread(&ImageWidth, sizeof(ImageWidth), 1, pFile);
+	fread(&ImageHeight, sizeof(ImageHeight), 1, pFile);
+	// 计算像素数据长度
+	PixelLength = ImageWidth * 3;
+	//bmp图像保证数据区域的长度是4的倍数
+	while (PixelLength % 4 != 0) {
+		++PixelLength;
 	}
-
-	// 根据总像素字节数分配内存
-	pixels = (GLubyte*)malloc(total_bytes);
-	if (pixels == 0) {
-		fclose(pFile);
-		return 0;
-	}
-
+	PixelLength *= ImageHeight;
 	// 读取像素数据
-	if (fread(pixels, total_bytes, 1, pFile) <= 0) {
-		free(pixels);
-		fclose(pFile);
-		return 0;
-	}
+	PixelData = (GLubyte*)malloc(PixelLength);
+	if (PixelData == 0)
+		exit(0);
+	fseek(pFile, 54, SEEK_SET);
+	fread(PixelData, PixelLength, 1, pFile);
+	// 关闭文件
+	fclose(pFile);
 
-	// 对就旧版本的兼容，如果图象的宽度和高度不是的整数次方，则需要进行缩放
-	// 若图像宽高超过了OpenGL规定的最大值，也缩放
-	{
-		GLint max;
-		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
-		if (!power_of_two(width)
-			|| !power_of_two(height)
-			|| width > max
-			|| height > max)
-		{
-			// 规定缩放后新的大小为边长的正方形
-			const GLint new_width = 256;
-			const GLint new_height = 256; 
-			GLint new_line_bytes, new_total_bytes;
-			GLubyte* new_pixels = 0;
-
-			// 计算每行需要的字节数和总字节数
-			new_line_bytes = new_width * 3;
-			while (new_line_bytes % 4 != 0)
-				++new_line_bytes;
-			new_total_bytes = new_line_bytes * new_height;
-
-			// 分配内存
-			new_pixels = (GLubyte*)malloc(new_total_bytes);
-			if (new_pixels == 0) {
-				free(pixels);
-				fclose(pFile);
-				return 0;
-			}
-
-			// 进行像素缩放
-			gluScaleImage(GL_RGB,
-				width, height, GL_UNSIGNED_BYTE, pixels,
-				new_width, new_height, GL_UNSIGNED_BYTE, new_pixels);
-
-			// 释放原来的像素数据，把pixels指向新的像素数据，并重新设置width和height
-			free(pixels);
-			pixels = new_pixels;
-			width = new_width;
-			height = new_height;
-		}
-	}
-
-	// 分配一个新的纹理编号
-	glGenTextures(1, &texture_ID);
-	if (texture_ID == 0) {
-		free(pixels);
-		fclose(pFile);
-		return 0;
-	}
-
-	// 绑定新的纹理，载入纹理并设置纹理参数
-	// 在绑定前，先获得原来绑定的纹理编号，以便在最后进行恢复
-	GLint lastTextureID = last_texture_ID;
-	glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTextureID);
-	glBindTexture(GL_TEXTURE_2D, texture_ID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//加载纹理
+	//用来生成纹理的数量   存储纹理索引的第一个元素指针
+	glGenTextures(1, &texture);
+	//绑定（指定）纹理对象
+	glBindTexture(GL_TEXTURE_2D, texture);
+	//纹理过滤函数
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
-		GL_BGR_EXT, GL_UNSIGNED_BYTE, pixels);
-	//恢复之前的纹理绑定
-	glBindTexture(GL_TEXTURE_2D, lastTextureID);  
-	free(pixels);
-	return texture_ID;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ImageWidth, ImageHeight, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, PixelData);
+	//生成一个2D纹理（Texture）。bmp图片的像素顺序是BGR所以用GL_BGR_EXT来反向加载数据
 }
 
- //  main函数 增加键盘事件
-int main(int argc, char** argv) {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-	glutInitWindowSize(w, h);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow("The House");
-	init();
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+void init(void) {
+	//清除颜色缓冲区，设置颜色
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	//设置着色模式 GL_FLAT 恒定着色，GL_SMOOTH光滑着色
+	glShadeModel(GL_FLAT);
 	glEnable(GL_DEPTH_TEST);
-   
-	// 启用纹理
-	glEnable(GL_TEXTURE_2D); 
-	//加载纹理
-	texWall = load_texture("wall.bmp"); 
-	texGrass = load_texture("grass.bmp");
-	texFloor = load_texture("floor.bmp");
+	//这句代码需放置在绘图及显示之前
+	g_text = gluNewQuadric();
+	//图片与程序源代码放置在同一目录下即可
+	loadTexture("floor3.bmp", texName[0]);
+	loadTexture("wall2.bmp", texName[1]);
+	loadTexture("ceiling2.bmp", texName[2]);
+	loadTexture("wall.bmp", texName[3]);
+	//所读取的图像数据的行对齐方式
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+}
+
+void display(void) {
+	//清除颜色缓冲以及深度缓冲
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_TEXTURE_2D);
+	//纹理和材质混合方式
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	setMetiral(matiral_diffused);
+
+	glPushMatrix();
+
+	glRotatef((GLfloat)direction, 0.0, 0.0, 1.0);
+
+	glTranslated(Ox, Oy, 0.0);
+	glBindTexture(GL_TEXTURE_2D, texName[3]);
+
+	gluSphere(g_text, 30, 15, 15);
+	//建立纹理坐标
+	gluQuadricTexture(g_text, GLU_TRUE);
+	//用面填充
+	gluQuadricDrawStyle(g_text, GLU_FILL);
+
+	//地板
+	glBindTexture(GL_TEXTURE_2D, texName[0]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-10.0, -10.0, 0.0);
+	glTexCoord2f(0.0, 10.0); glVertex3f(-10.0, 10.0, 0.0);
+	glTexCoord2f(10.0, 10.0); glVertex3f(10.0, 10.0, 0.0);
+	glTexCoord2f(10.0, 0.0); glVertex3f(10.0, -10.0, 0.0);
+	glEnd();
+
+	//四周墙壁
+	glBindTexture(GL_TEXTURE_2D, texName[1]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-10.0, -10.0, 0.0);
+	glTexCoord2f(0.0, 10.0); glVertex3f(-10.0, -10.0, 10.0);
+	glTexCoord2f(10.0, 10.0); glVertex3f(-10.0, 10.0, 10.0);
+	glTexCoord2f(10.0, 0.0); glVertex3f(-10.0, 10.0, 0);
+
+	glTexCoord2f(0.0, 0.0); glVertex3f(10.0, -10.0, 0.0);
+	glTexCoord2f(0.0, 10.0); glVertex3f(10.0, -10.0, 10.0);
+	glTexCoord2f(10.0, 10.0); glVertex3f(10.0, 10.0, 10.0);
+	glTexCoord2f(10.0, 0.0); glVertex3f(10.0, 10.0, 0);
+
+	glTexCoord2f(0.0, 0.0); glVertex3f(-10.0, 10.0, 0.0);
+	glTexCoord2f(0.0, 10.0); glVertex3f(-10.0, 10.0, 10.0);
+	glTexCoord2f(10.0, 10.0); glVertex3f(10.0, 10.0, 10.0);
+	glTexCoord2f(10.0, 0.0); glVertex3f(10.0, 10.0, 0.0);
+
+	glTexCoord2f(0.0, 0.0); glVertex3f(-10.0, -10.0, 0.0);
+	glTexCoord2f(0.0, 10.0); glVertex3f(-10.0, -10.0, 10.0);
+	glTexCoord2f(10.0, 10.0); glVertex3f(10.0, -10.0, 10.0);
+	glTexCoord2f(10.0, 0.0); glVertex3f(10.0, -10.0, 0);
+	glEnd();
+
+	//房顶
+	glBindTexture(GL_TEXTURE_2D, texName[2]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-10.0, -10.0, 10.0);
+	glTexCoord2f(0.0, 1.0); glVertex3f(-10.0, 10.0, 10.0);
+	glTexCoord2f(1.0, 1.0); glVertex3f(10.0, 10.0, 10.0);
+	glTexCoord2f(1.0, 0.0); glVertex3f(10.0, -10.0, 10.0);
+	glEnd();
+
+	glPopMatrix();
+
+	//用于强制刷新缓存
+	glFlush();
+	//交换双缓存
+	glutSwapBuffers();
+	//标志下次刷新，没有的话，程序打开后不会刷新界面
+	glutPostRedisplay();
+}
+void reshape(int w, int h) {
+	//在默认情况下，视口被设置为占据打开窗口的整个像素矩形
+	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	//选择投影矩阵
+	glMatrixMode(GL_PROJECTION);
+	//重置当前指定的矩阵为单位矩阵
+	glLoadIdentity();
+	//角度，宽高比，z轴近处，远处。
+	gluPerspective(90.0, (GLfloat)w / (GLfloat)h, 0.1, 30.0);
+	//模型视景矩阵||GL_TEXTURE,对纹理矩阵堆栈应用随后的矩阵操作.
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(0, 0, 3, 0, 10, 3, 0.0, 0.0, 1.0);
+}
+
+void keyboard(unsigned char key, int x, int y) {
+	switch (key) {
+	case 'w':;
+	case 'W':
+		Ox -= step * sin(direction / 180 * PI);
+		Oy -= step * cos(direction / 180 * PI);
+		glutPostRedisplay();
+		break;
+	case 's':;
+	case 'S':
+		Ox += step * sin(direction / 180 * PI);
+		Oy += step * cos(direction / 180 * PI);
+		glutPostRedisplay();
+		break;
+	case 'a':
+	case 'A':
+		direction = direction - 2;
+		glutPostRedisplay();
+		break;
+	case 'd':;
+	case 'D':
+		direction = direction + 2;
+		glutPostRedisplay();
+		break;
+	case 27:
+		exit(0);
+		break;
+	default:
+		break;
+	}
+}
+int main(int argc, char* argv[]) {
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitWindowSize(800, 800);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("Zheng Fang Ti");
+
+	init();
 
 	glutDisplayFunc(display);
-	//调用键盘控制函数
-	glutSpecialFunc(specialkeys); 
+	glutReshapeFunc(reshape);
+	glutKeyboardFunc(keyboard);
 	glutMainLoop();
 	return 0;
 }
